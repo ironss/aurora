@@ -1,0 +1,13 @@
+Download POES images from http://www.swpc.noaa.gov/
+
+1. Download the index page http://www.swpc.noaa.gov/pmap/Plots.html
+
+2. Look for all the Southern hemisphere plots
+
+3. Check to see if any have not been downloaded
+
+4. If any need to be downloaded, then follow the link to the page with
+   the image, then download the GIF image only.
+   
+5. Once all images have been downloaded, update the composite.
+
