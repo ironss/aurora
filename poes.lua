@@ -40,3 +40,10 @@ end
 
 print(number_downloaded .. ' new images downloaded.')
 
+if number_downloaded ~= 0 then
+   print('Creating composite...')
+   os.execute('ls -r1 20*.gif > .filelist.txt')
+   local cmd = 'montage -geometry 160x160+4+4 -tile 10x @.filelist.txt out.gif'
+   os.execute(cmd)
+end
+
