@@ -7,9 +7,14 @@ local function url_get(url)
    return s
 end
 
+local data_fn = 'data/data.txt'
+local data_tmp_fn1 = '.data-tmp1.txt'
+local data_tmp_fn2 = '.data-tmp2.txt'
+
 local url_index = 'http://www.swpc.noaa.gov/pmap/Plots.html'
 local url_base = 'http://www.swpc.noaa.gov/'
 local gir_url_base = 'http://www.swpc.noaa.gov/pmap/gif/pmap'
+
 
 local index = url_get(url_index)
 --print(index)
@@ -17,8 +22,17 @@ local index = url_get(url_index)
 local number_downloaded = 0
 
 local match = [[<tr .-<td>(%d%d%d%d %d%d %d%d).-HREF="([^"]+)".-(%d%d%d%d) UT.-([SN]).-(%d+).-(%d+%.%d+ GW).-(%d+).-(%d+%.%d+)</td></tr>]]
+
+
+os.execute(string.format('cp %s %s', data_fn, data_tmp_fn1))
+local df = io.open(data_tmp_fn1, 'a')
+
 for date, page_url, time, hemi, act, pwr, sat, n in string.gmatch(index, match) do
    local fn = 'images/' .. string.match(page_url, "(%d+.-)%.html") .. '.gif'
+   local datetime = string.gsub(date..'T'..time, ' ', '')
+   df:write(string.format("%s,%s,%s,%s,%s,%s\n", fn, datetime, sat, act, pwr, n))
+   
+--   print(date, page_url, time, hemi, act, pwr, sat, n, fn, gif_url)
    --print(fn)
    if hemi == 'S' then
       local f = io.open(fn, 'r')
@@ -37,6 +51,9 @@ for date, page_url, time, hemi, act, pwr, sat, n in string.gmatch(index, match) 
       end
    end
 end
+
+df:close()
+os.execute(string.format('sort %s | uniq > %s; mv %s %s', data_tmp_fn1, data_tmp_fn2, data_tmp_fn2, data_fn))
 
 print(number_downloaded .. ' new images downloaded.')
 
