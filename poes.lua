@@ -18,7 +18,7 @@ local number_downloaded = 0
 
 local match = [[<tr .-<td>(%d%d%d%d %d%d %d%d).-HREF="([^"]+)".-(%d%d%d%d) UT.-([SN]).-(%d+).-(%d+%.%d+ GW).-(%d+).-(%d+%.%d+)</td></tr>]]
 for date, page_url, time, hemi, act, pwr, sat, n in string.gmatch(index, match) do
-   local fn = string.match(page_url, "(%d+.-)%.html") .. '.gif'
+   local fn = 'images/' .. string.match(page_url, "(%d+.-)%.html") .. '.gif'
    --print(fn)
    if hemi == 'S' then
       local f = io.open(fn, 'r')
@@ -42,8 +42,8 @@ print(number_downloaded .. ' new images downloaded.')
 
 if number_downloaded ~= 0 then
    print('Creating composite...')
-   os.execute('ls -r1 20*.gif > .filelist.txt')
-   local cmd = 'montage -geometry 160x160+4+4 -tile 10x @.filelist.txt out.gif'
+   os.execute('ls -r1 images/20*.gif > .filelist.txt')
+   local cmd = 'montage -geometry 160x160+4+4 -tile 10x @.filelist.txt composite.gif'
    os.execute(cmd)
 end
 
