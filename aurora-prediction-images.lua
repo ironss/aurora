@@ -32,8 +32,6 @@ for date, page_url, time, hemi, act, pwr, sat, n in string.gmatch(index, match) 
    local datetime = string.gsub(date..'T'..time, ' ', '')
    df:write(string.format("%s,%s,%s,%s,%s,%s\n", fn, datetime, sat, act, pwr, n))
    
---   print(date, page_url, time, hemi, act, pwr, sat, n, fn, gif_url)
-   --print(fn)
    if hemi == 'S' then
       local f = io.open(fn, 'r')
       if f ~= nil then
@@ -41,8 +39,7 @@ for date, page_url, time, hemi, act, pwr, sat, n in string.gmatch(index, match) 
       else  -- If file does not already exist
          local page = url_get(url_base .. page_url)
          local gif_url = string.match(page, [[<img src="(/pmap/gif/pmap_.-%.gif)"]])      
---         print(date, page_url, time, hemi, act, pwr, sat, n, fn, gif_url)
-         print(fn) --gif_url)
+         print(fn, datetime, sat, act, pwr, n)
          local gif_data = url_get(url_base .. gif_url)
          local f = io.open(fn, 'w')
          f:write(gif_data)
