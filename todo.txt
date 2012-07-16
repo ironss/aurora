@@ -1,0 +1,13 @@
+1. Store date and time in an Excel-friendly format.
+
+2. Save northern-hemisphere plots too. Generate separate composites.
+
+3. Add a sensible time scale to the composites:
+    * one line per day
+    * spaced out approximately to scale
+
+4. Add power and activity to composite image.
+
+5. Create graph showing power and activity vs time, with associated images.
+
+
