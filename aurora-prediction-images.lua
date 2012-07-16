@@ -51,7 +51,7 @@ end
 
 df:close()
 os.execute(string.format('sort %s | uniq > %s; mv %s %s', data_tmp_fn1, data_tmp_fn2, data_tmp_fn2, data_fn))
-os.execute('rm -f %s', data_tmp_fn1)
+os.execute(string.format('rm -f %s', data_tmp_fn1))
 
 print(number_downloaded .. ' new images downloaded.')
 
