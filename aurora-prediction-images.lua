@@ -32,20 +32,18 @@ for date, page_url, time, hemi, act, pwr, sat, n in string.gmatch(index, match) 
    local datetime = string.gsub(date..'T'..time, ' ', '')
    df:write(string.format("%s,%s,%s,%s,%s,%s\n", fn, datetime, sat, act, pwr, n))
    
-   if hemi == 'S' then
-      local f = io.open(fn, 'r')
-      if f ~= nil then
-         f:close()
-      else  -- If file does not already exist
-         local page = url_get(url_base .. page_url)
-         local gif_url = string.match(page, [[<img src="(/pmap/gif/pmap_.-%.gif)"]])      
-         print(fn, datetime, sat, act, pwr, n)
-         local gif_data = url_get(url_base .. gif_url)
-         local f = io.open(fn, 'w')
-         f:write(gif_data)
-         f:close()
-         number_downloaded = number_downloaded + 1
-      end
+   local f = io.open(fn, 'r')
+   if f ~= nil then
+      f:close()
+   else  -- If file does not already exist
+      local page = url_get(url_base .. page_url)
+      local gif_url = string.match(page, [[<img src="(/pmap/gif/pmap_.-%.gif)"]])      
+      print(fn, datetime, sat, act, pwr, n)
+      local gif_data = url_get(url_base .. gif_url)
+      local f = io.open(fn, 'w')
+      f:write(gif_data)
+      f:close()
+      number_downloaded = number_downloaded + 1
    end
 end
 
@@ -56,10 +54,16 @@ os.execute(string.format('rm -f %s', data_tmp_fn1))
 print(number_downloaded .. ' new images downloaded.')
 
 if number_downloaded ~= 0 then
-   print('Creating composite...')
-   os.execute('ls -r1 images/20*.gif > .filelist.txt')
-   local cmd = 'montage -geometry 160x160+4+4 -tile 8x @.filelist.txt composite.gif'
+   print('Creating composite-S...')
+   os.execute('ls -r1 images/20*S*.gif > .filelist-S.txt')
+   local cmd = 'montage -geometry 160x160+4+4 -tile 7x @.filelist-S.txt composite-S.gif'
    os.execute(cmd)
-   os.execute('rm .filelist.txt')
+   os.execute('rm .filelist-S.txt')
+
+   print('Creating composite-N...')
+   os.execute('ls -r1 images/20*N*.gif > .filelist-N.txt')
+   local cmd = 'montage -geometry 160x160+4+4 -tile 7x @.filelist-N.txt composite-N.gif'
+   os.execute(cmd)
+   os.execute('rm .filelist-N.txt')
 end
 
