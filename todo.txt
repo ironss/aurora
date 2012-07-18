@@ -1,6 +1,6 @@
 1. Store date and time in an Excel-friendly format.
 
-2. Save northern-hemisphere plots too. Generate separate composites.
+2. Save northern-hemisphere plots too. Generate separate composites. -- DONE
 
 3. Add a sensible time scale to the composites:
     * one line per day
