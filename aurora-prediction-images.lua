@@ -85,26 +85,30 @@ end
 
 db.close(db)
 
-
 print(number_downloaded .. ' new images downloaded.')
 
 function create_composites(hemi)
    local pattern  = '(images/(' .. string.rep('%d', 8) .. ')%d+'..hemi..'.-.gif)'
    local f = io.popen('ls -r1 images/*.gif')
    local dates = {}
+   local files_by_date = {}
    for l in f:lines() do
-      print(l)
+      --print(l)
       local path, date = string.match(l, pattern)
       if date ~= nil then
-         if dates[date] == nil then
-            dates[date] = {}
+         if files_by_date[date] == nil then
+            files_by_date[date] = {}
+            dates[#dates+1] = date
          end
-         local t = dates[date]
+         local t = files_by_date[date]
          t[#t+1] = path
       end
    end
    
-   for date, files in pairs(dates) do
+   table.sort(dates)
+   
+   for _, date in ipairs(dates) do
+      local files = files_by_date[date]
       local fn = 'composite-'..date..'-'..hemi..'.gif'
       print('Creating '..fn)
       local filelist = table.concat(files, ' ')
