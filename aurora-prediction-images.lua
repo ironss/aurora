@@ -88,12 +88,30 @@ db.close(db)
 
 print(number_downloaded .. ' new images downloaded.')
 
-function create_composites(path)
-   print('Creating composite ' .. path)
-   os.execute('ls -r1 images/20*'.. path..'*.gif > .filelist-'..path..'.txt')
-   local cmd = 'montage -geometry 160x160+4+4 -tile 7x @.filelist-'..path..'.txt composite-'..path..'.gif'
-   os.execute(cmd)
-   os.execute('rm .filelist-'..path..'.txt')
+function create_composites(hemi)
+   local pattern  = '(images/(' .. string.rep('%d', 8) .. ')%d+'..hemi..'.-.gif)'
+   local f = io.popen('ls -r1 images/*.gif')
+   local dates = {}
+   for l in f:lines() do
+      print(l)
+      local path, date = string.match(l, pattern)
+      if date ~= nil then
+         if dates[date] == nil then
+            dates[date] = {}
+         end
+         local t = dates[date]
+         t[#t+1] = path
+      end
+   end
+   
+   for date, files in pairs(dates) do
+      local fn = 'composite-'..date..'-'..hemi..'.gif'
+      print('Creating '..fn)
+      local filelist = table.concat(files, ' ')
+      local cmd = table.concat({ 'montage -geometry 160x160+4+4 -tile 7x', filelist, fn }, ' ')
+      --print(cmd)
+      os.execute(cmd)
+   end
 end
 
 if true then --number_downloaded ~= 0 then
