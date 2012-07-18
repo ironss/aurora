@@ -1,5 +1,37 @@
 #! /usr/bin/env gsl-shell
 
+
+-- Database
+
+local function db_open(database)
+   -- TODO: Metatable
+   -- TODO: Error checking
+   
+   local db = {}
+   db.fn = database
+   db.tmp_fn1 = '.data-tmp1.txt'
+   db.tmp_fn2 = '.data-tmp2.txt'
+
+   os.execute(string.format('cp %s %s', db.fn, db.tmp_fn1))
+   db.f = io.open(db.tmp_fn1, 'a')
+   
+   db.write = function(db, data)
+      db.f:write(data)
+   end
+   
+   db.close = function(db)
+      db.f:close()
+
+      os.execute(string.format('sort %s | uniq > %s; mv %s %s', db.tmp_fn1, db.tmp_fn2, db.tmp_fn2, db.fn))
+      os.execute(string.format('rm -f %s', db.tmp_fn1))
+   end
+
+   return db
+end
+
+
+-- Reading URLs
+
 local function url_get(url)
    local cmd = 'wget -q -O - ' .. url 
    local f = io.popen(cmd)
@@ -7,13 +39,13 @@ local function url_get(url)
    return s
 end
 
-local data_fn = 'data/data.txt'
-local data_tmp_fn1 = '.data-tmp1.txt'
-local data_tmp_fn2 = '.data-tmp2.txt'
 
+local data_fn = 'data/data.txt'
 local url_index = 'http://www.swpc.noaa.gov/pmap/Plots.html'
 local url_base = 'http://www.swpc.noaa.gov/'
 local gir_url_base = 'http://www.swpc.noaa.gov/pmap/gif/pmap'
+
+
 
 
 local index = url_get(url_index)
@@ -24,13 +56,17 @@ local number_downloaded = 0
 local match = [[<tr .-<td>(%d%d%d%d %d%d %d%d).-HREF="([^"]+)".-(%d%d%d%d) UT.-([SN]).-(%d+).-(%d+%.%d+ GW).-(%d+).-(%d+%.%d+)</td></tr>]]
 
 
-os.execute(string.format('cp %s %s', data_fn, data_tmp_fn1))
-local df = io.open(data_tmp_fn1, 'a')
+local grammer = [[
+   row = 
+]]
+
+
+local db = db_open(data_fn)
 
 for date, page_url, time, hemi, act, pwr, sat, n in string.gmatch(index, match) do
    local fn = 'images/' .. string.match(page_url, "(%d+.-)%.html") .. '.gif'
    local datetime = string.gsub(date..'T'..time, ' ', '')
-   df:write(string.format("%s,%s,%s,%s,%s,%s\n", fn, datetime, sat, act, pwr, n))
+   db.write(db, string.format("%s,%s,%s,%s,%s,%s\n", fn, datetime, sat, act, pwr, n))
    
    local f = io.open(fn, 'r')
    if f ~= nil then
@@ -47,9 +83,8 @@ for date, page_url, time, hemi, act, pwr, sat, n in string.gmatch(index, match) 
    end
 end
 
-df:close()
-os.execute(string.format('sort %s | uniq > %s; mv %s %s', data_tmp_fn1, data_tmp_fn2, data_tmp_fn2, data_fn))
-os.execute(string.format('rm -f %s', data_tmp_fn1))
+db.close(db)
+
 
 print(number_downloaded .. ' new images downloaded.')
 
