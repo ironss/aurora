@@ -88,17 +88,16 @@ db.close(db)
 
 print(number_downloaded .. ' new images downloaded.')
 
-if number_downloaded ~= 0 then
-   print('Creating composite-S...')
-   os.execute('ls -r1 images/20*S*.gif > .filelist-S.txt')
-   local cmd = 'montage -geometry 160x160+4+4 -tile 7x @.filelist-S.txt composite-S.gif'
+function create_composites(path)
+   print('Creating composite ' .. path)
+   os.execute('ls -r1 images/20*'.. path..'*.gif > .filelist-'..path..'.txt')
+   local cmd = 'montage -geometry 160x160+4+4 -tile 7x @.filelist-'..path..'.txt composite-'..path..'.gif'
    os.execute(cmd)
-   os.execute('rm .filelist-S.txt')
+   os.execute('rm .filelist-'..path..'.txt')
+end
 
-   print('Creating composite-N...')
-   os.execute('ls -r1 images/20*N*.gif > .filelist-N.txt')
-   local cmd = 'montage -geometry 160x160+4+4 -tile 7x @.filelist-N.txt composite-N.gif'
-   os.execute(cmd)
-   os.execute('rm .filelist-N.txt')
+if true then --number_downloaded ~= 0 then
+   create_composites('S')
+   create_composites('N')
 end
 
