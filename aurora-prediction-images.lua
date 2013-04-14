@@ -1,4 +1,4 @@
-#! /usr/bin/env gsl-shell
+#! /usr/bin/env lua
 
 
 -- Database
