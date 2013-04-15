@@ -87,39 +87,7 @@ db.close(db)
 
 print(number_downloaded .. ' new images downloaded.')
 
-function create_composites(hemi)
-   local pattern  = '(images/(' .. string.rep('%d', 8) .. ')%d+'..hemi..'.-.gif)'
-   local f = io.popen('ls -1 images/*.gif')
-   local dates = {}
-   local files_by_date = {}
-   for l in f:lines() do
-      --print(l)
-      local path, date = string.match(l, pattern)
-      if date ~= nil then
-         if files_by_date[date] == nil then
-            files_by_date[date] = {}
-            dates[#dates+1] = date
-         end
-         local t = files_by_date[date]
-         t[#t+1] = path
-      end
-   end
-   
-   table.sort(dates)
-   
-   for _, date in ipairs(dates) do
-      local files = files_by_date[date]
-      local fn = 'composite-'..date..'-'..hemi..'.gif'
-      print('Creating '..fn)
-      local filelist = table.concat(files, ' ')
-      local cmd = table.concat({ 'montage -label "%f" -geometry 160x160+4+4 -tile 7x', filelist, fn }, ' ')
-      --print(cmd)
-      os.execute(cmd)
-   end
-end
-
 if true then --number_downloaded ~= 0 then
-   create_composites('S')
-   create_composites('N')
+   os.execute("tup upd")
 end
 
