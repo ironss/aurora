@@ -1,0 +1,6 @@
+#! /bin/sh
+
+output=$1
+shift
+
+montage -label "%f" -geometry 160x160+4+4 -tile 7x  $*  $output   
