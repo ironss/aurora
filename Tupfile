@@ -1,4 +1,8 @@
 
+
+!montage = |>   montage -label \"%%f\" -geometry 160x160+4+4 -tile 7x  %f  %o   |>
+
+
 preload images
 run ./summary-files images
 

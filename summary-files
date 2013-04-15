@@ -7,6 +7,6 @@ for f in $files; do
    e=${f#${d}_}
    h=${e%.gif}
 #   echo $d, $e, $h
-   echo ": images/$d*$h*.gif |>   montage -label \"%%f\" -geometry 160x160+4+4 -tile 7x  %f  $f   |>  $f"
+   echo ": images/$d*$h*.gif |>   !montage    |>  $f"
 done
 
