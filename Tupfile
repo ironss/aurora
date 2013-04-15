@@ -1,7 +1,7 @@
 
 
 !montage = |>   montage -label "%%f" -geometry 160x160+4+4 -tile 7x  %f  %o   |>
-!montage1 = |>   ./montage1 %o %f    |>
+!montage1 = |   data/data.txt   |>   ./montage1 %o %f    |>
 
 
 preload images
