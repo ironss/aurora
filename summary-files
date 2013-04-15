@@ -1,12 +1,17 @@
 #! /bin/sh
 
-summary_files=$(ls -1 $1 | sed -n -e 's/^\([[:digit:]]\{8\}\)\([[:digit:]]\{4\}\)\([NS]\)\(..\)\(.*\)/\1_\3\5/p' | sort | uniq)
+summary_files=$(ls -1 $* | sed -n -e 's/^\(.*\/\)\([[:digit:]]\{8\}\)\([[:digit:]]\{4\}\)\([NS]\)\(..\)\(.*\)/\1\2_\4\6/p' | sort | uniq)
+
+#echo $summary_files
 
 for f in $summary_files; do
-   d=${f%_?.gif}
-   e=${f#${d}_}
-   h=${e%.gif}
-#   echo $d, $e, $h
-   echo ": images/$d*$h*.gif |>   !montage    |>  composite-$f"
+	basename=${f#*/}   # base name
+	directory=${f%/*}   # directory
+   date=${basename%_?.gif}
+   e=${basename#${date}_}
+   pole=${e%.gif}
+   glob=$directory/$date*$pole*.gif
+#   echo $directory, $basename, $date, $e, $pole
+   echo ": $glob  |>   !montage1    |>  composite-$basename"
 done
 
